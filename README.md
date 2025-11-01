@@ -1,70 +1,113 @@
-# Getting Started with Create React App
+# 🎓 Graduation Invitation - Customization Guide
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## How to Customize Your Invitation
 
-## Available Scripts
+### 1. Update Your Personal Information
 
-In the project directory, you can run:
+Open `src/GraduationInvite.jsx` and find the `eventDetails` state (around line 10):
 
-### `npm start`
+```javascript
+    const [eventDetails] = useState({
+    name: "Đặng Quốc Huy",
+    time: "6 giờ - 12 giờ",
+    date: "Chủ Nhật, ngày 09/11/2025",
+    location: "Trung tâm Hội nghị tỉnh",
+    address: "01 Nguyễn Tất Thành, phường Quy Nhơn, tỉnh Gia Lai",
+    photoUrl: "IMG_3159.jpg",
+    facebookUrl: "https://facebook.com/dangquochuy",
+});
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2. Add Your Photo
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### Option A: Use a local image
+1. Place your photo in the `public` folder (e.g., `public/my-photo.jpg`)
+2. Update the `photoUrl` field:
+   ```javascript
+   photoUrl: "/my-photo.jpg"
+   ```
 
-### `npm test`
+#### Option B: Use an online image
+1. Upload your photo to an image hosting service (e.g., imgur, cloudinary)
+2. Update the `photoUrl` field with the full URL:
+   ```javascript
+   photoUrl: "https://example.com/your-photo.jpg"
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 3. Update Contact Information
 
-### `npm run build`
+Find the contact section in the same file (near the bottom) and update:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```javascript
+<a href="tel:+84123456789" className="contact-link">
+    📱 0768 464 821
+</a>
+<a href="mailto:graduate@example.com" className="contact-link">
+    ✉️ qhuy14775@gmail.com
+</a>
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Replace with your actual phone number and email.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 4. Customize Timeline
 
-### `npm run eject`
+Update the timeline section (around line 260) with your event schedule:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```javascript
+<h4>7:30 - 8:00</h4>
+<p>Đón tiếp khách mời & Check-in</p>
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 5. Customize Colors (Advanced)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Open `src/App.css` to change the color scheme:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Primary gold color: `#ffd700`
+- Secondary pink color: `#ffb6ff`
+- Dark background: `#0b0b10`
 
-## Learn More
+Search and replace these hex codes with your preferred colors.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🚀 Running the Project
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm start
+```
 
-### Code Splitting
+The app will open at http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📦 Building for Production
 
-### Analyzing the Bundle Size
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+This creates an optimized build in the `build` folder that you can deploy to any web hosting service.
 
-### Making a Progressive Web App
+## 🎨 Features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+✨ Beautiful 3D animated hero section
+📸 Photo frame with decorative borders
+📅 Event details cards with hover effects
+⏰ Event timeline
+💌 RSVP buttons
+📱 Fully responsive design
+🎭 Smooth scroll animations
+✉️ Contact information section
 
-### Advanced Configuration
+## 💡 Tips
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Use a high-quality square photo for best results (minimum 500x500px)
+2. Keep your name concise for better mobile display
+3. Test on mobile devices to ensure responsive design works well
+4. Consider adding your school logo to the `public` folder
 
-### Deployment
+## 🌐 Deployment Options
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- **Vercel**: Connect your GitHub repo for automatic deployments
+- **Netlify**: Drag and drop the `build` folder
+- **GitHub Pages**: Use `gh-pages` package for easy deployment
+- **Firebase Hosting**: Simple and free hosting option
 
-### `npm run build` fails to minify
+Enjoy your beautiful graduation invitation! 🎉
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
