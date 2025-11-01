@@ -1,0 +1,10 @@
+/* Minimal global reset - main styles are in App.css */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    margin: 0;
+    padding: 0;
+}
