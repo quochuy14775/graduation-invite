@@ -2,16 +2,36 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import "./App.css";
 
+// ✅ Firebase imports
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+
+// ✅ Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCCpCDBxAGCF_r0z4t3nQneBS3Bh_iUxFY",
+    authDomain: "graduation-c5dd2.firebaseapp.com",
+    projectId: "graduation-c5dd2",
+    storageBucket: "graduation-c5dd2.firebasestorage.app",
+    messagingSenderId: "1096267135377",
+    appId: "1:1096267135377:web:1e495ebd0d9804b49b4230",
+    measurementId: "G-P90YHF845B",
+};
+
+// ✅ Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 export default function GraduationLanding() {
     const containerRef = useRef(null);
-
+    const dialogRef = useRef(null); // <-- added dialog ref
     const [isMobile, setIsMobile] = useState(false);
+    const [fullName, setFullName] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
-    // 🧠 Xác định thiết bị di động
+    // 📱 Detect mobile
     useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -32,8 +52,8 @@ export default function GraduationLanding() {
         offset: ["start start", "end end"],
     });
 
-    // 🎯 Điều chỉnh tốc độ animation theo loại thiết bị
-    const speedFactor = isMobile ? 0.6 : 0.7; // càng nhỏ => cuộn càng nhanh
+    // 🎞 Animation speed factor
+    const speedFactor = isMobile ? 0.6 : 0.7;
 
     // Scroll animations
     const yHero = useTransform(scrollYProgress, [0, 0.4 * speedFactor], ["0%", "-25%"]);
@@ -46,13 +66,68 @@ export default function GraduationLanding() {
     const opacityThank = useTransform(scrollYProgress, [0.7 * speedFactor, 0.95 * speedFactor], [0, 1]);
     const yThank = useTransform(scrollYProgress, [0.7 * speedFactor, 0.95 * speedFactor], ["30%", "0%"]);
 
+    // Helper to show the empty-name dialog and lock background scroll
+    const showEmptyNameDialog = () => {
+        if (dialogRef.current && typeof dialogRef.current.showModal === "function") {
+            try {
+                dialogRef.current.showModal();
+                // lock background scroll while dialog is open
+                document.body.style.overflow = "hidden";
+            } catch (err) {
+                // Some browsers throw if dialog is already open; ignore
+            }
+        } else {
+            alert("Vui lòng nhập họ và tên trước khi xác nhận!");
+        }
+    };
+
+    // ✅ Handle attendance (accept/reject)
+    const handleAttend = async (status) => {
+        if (!fullName.trim()) {
+            // Use dialog helper instead of direct alert or showModal
+            showEmptyNameDialog();
+            return;
+        }
+
+        try {
+            setIsSubmitting(true);
+            await addDoc(collection(db, "attendees"), {
+                fullName,
+                status, // 'accept' or 'reject'
+                timestamp: serverTimestamp(),
+            });
+
+            if (status === "accept") {
+                setSuccessMessage(`Cảm ơn bạn ${fullName} đã tham dự lễ tốt nghiệp cùng với Huy! 🎉`);
+            } else if (status === "reject") {
+                setSuccessMessage(`Rất tiếc về sự vắng mặt của bạn. Cảm ơn bạn ${fullName} đã thông báo cho Huy.`);
+            } else {
+                setSuccessMessage(`Cảm ơn ${fullName}!`);
+            }
+
+            setFullName("");
+        } catch (error) {
+            alert("Lỗi khi lưu thông tin: " + error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="page main-container" ref={containerRef}>
+
+            {/* Dialog for empty name warning */}
+            <dialog ref={dialogRef} className="rsvp-dialog" onClose={() => { document.body.style.overflow = ''; }}>
+                <form method="dialog" className="dialog-form">
+                    <p>Vui lòng nhập họ và tên trước khi xác nhận!</p>
+                    <menu>
+                        <button className="dialog-close" onClick={() => { if (dialogRef.current) { dialogRef.current.close(); document.body.style.overflow = ''; } }}>Đóng</button>
+                    </menu>
+                </form>
+            </dialog>
+
             {/* === Hero Section === */}
-            <motion.section
-                className="hero-section no-3d-bg"
-                style={{ y: yHero, opacity: opacityHero }}
-            >
+            <motion.section className="hero-section no-3d-bg" style={{ y: yHero, opacity: opacityHero }}>
                 <div className="hero-text">
                     <motion.div
                         initial={{ opacity: 0, y: 60 }}
@@ -63,19 +138,11 @@ export default function GraduationLanding() {
                         <span className="emoji-badge">🎓</span>
                     </motion.div>
 
-                    <motion.h1
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.1 }}
-                    >
+                    <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }}>
                         Lễ Tốt Nghiệp 2025
                     </motion.h1>
 
-                    <motion.p
-                        initial={{ opacity: 0, y: 60 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.9 }}
-                    >
+                    <motion.p initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.9 }}>
                         Một chương mới đang mở ra — Hãy cùng kỷ niệm khoảnh khắc đặc biệt này cùng Huy!
                     </motion.p>
 
@@ -92,10 +159,7 @@ export default function GraduationLanding() {
             </motion.section>
 
             {/* === Photo Section === */}
-            <motion.section
-                className="photo-section"
-                style={{ opacity: opacityInvite, scale: scaleInvite, y: yInvite }}
-            >
+            <motion.section className="photo-section" style={{ opacity: opacityInvite, scale: scaleInvite, y: yInvite }}>
                 <motion.div
                     className="photo-container"
                     initial={{ opacity: 0, y: 80 }}
@@ -105,11 +169,7 @@ export default function GraduationLanding() {
                 >
                     <div className="photo-frame">
                         {eventDetails.photoUrl ? (
-                            <img
-                                src={eventDetails.photoUrl}
-                                alt="Graduate"
-                                className="graduate-photo"
-                            />
+                            <img src={eventDetails.photoUrl} alt="Graduate" className="graduate-photo" />
                         ) : (
                             <div className="photo-placeholder">
                                 <span className="photo-icon">🎓</span>
@@ -160,60 +220,38 @@ export default function GraduationLanding() {
                         💡 Kỷ niệm 4 năm đại học – cảm ơn thầy cô và bạn bè đã cùng đồng hành!
                     </motion.p>
 
-                    <motion.div
-                        className="floating-icons"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.8, duration: 0.8 }}
-                    >
-                        <motion.span
-                            className="float-icon"
-                            animate={{ y: [0, -10, 0] }}
-                            transition={{ repeat: Infinity, duration: 2 }}
-                        >
-                            🎉
-                        </motion.span>
-                        <motion.span
-                            className="float-icon"
-                            animate={{ y: [0, -8, 0] }}
-                            transition={{ repeat: Infinity, duration: 2.4, delay: 0.5 }}
-                        >
-                            🎓
-                        </motion.span>
-                        <motion.span
-                            className="float-icon"
-                            animate={{ y: [0, -12, 0] }}
-                            transition={{ repeat: Infinity, duration: 2.8, delay: 1 }}
-                        >
-                            🌟
-                        </motion.span>
+                    {/* ===== RSVP action moved here - centered under the name ===== */}
+                    <motion.div className="action-section" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.9, duration: 0.6 }}>
+                        <input
+                            type="text"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            placeholder="Họ và Tên"
+                            className="rsvp-input"
+                        />
+
+                        <div className="button-row">
+                            <motion.button className="rsvp-button primary" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => handleAttend('accept')} disabled={isSubmitting}>
+                                {isSubmitting ? 'Đang lưu...' : '✓ Xác nhận tham dự'}
+                            </motion.button>
+
+                            <motion.button className="rsvp-button secondary reject" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => handleAttend('reject')} disabled={isSubmitting}>
+                                {isSubmitting ? 'Đang lưu...' : '✕ Không tham dự'}
+                            </motion.button>
+                        </div>
+
+                        {successMessage && <p className="success-message">{successMessage}</p>}
                     </motion.div>
                 </motion.div>
             </motion.section>
 
             {/* === Event Details Section === */}
-            <motion.section
-                className="details-section"
-                style={{ opacity: opacityDetails, x: xDetails }}
-            >
-                <motion.h2
-                    className="section-title"
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                >
+            <motion.section className="details-section" style={{ opacity: opacityDetails, x: xDetails }}>
+                <motion.h2 className="section-title" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
                     Trân Trọng Kính Mời
                 </motion.h2>
 
-                <motion.p
-                    className="section-subtitle"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1, duration: 0.6 }}
-                >
+                <motion.p className="section-subtitle" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.6 }}>
                     Hãy cùng tôi chào đón hành trình mới trong buổi lễ tốt nghiệp đầy ý nghĩa
                 </motion.p>
 
@@ -223,15 +261,7 @@ export default function GraduationLanding() {
                         { icon: "📍", title: "Địa Điểm", main: eventDetails.location, sub: eventDetails.address },
                         { icon: "👔", title: "Dress Code", main: "Trang phục lịch sự", sub: "Semi-formal / Smart casual" },
                     ].map((item, i) => (
-                        <motion.div
-                            key={i}
-                            className="detail-card"
-                            initial={{ opacity: 0, y: 60 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.1 * (i + 1), duration: 0.5 }}
-                            whileHover={{ y: -8, transition: { duration: 0.25 } }}
-                        >
+                        <motion.div key={i} className="detail-card" initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 * (i + 1), duration: 0.5 }} whileHover={{ y: -8, transition: { duration: 0.25 } }}>
                             <div className="card-icon">{item.icon}</div>
                             <h3>{item.title}</h3>
                             <p className="detail-main">{item.main}</p>
@@ -240,76 +270,17 @@ export default function GraduationLanding() {
                     ))}
                 </div>
 
-                <motion.div
-                    className="action-section"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                    <motion.button
-                        className="rsvp-button primary"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        ✓ Xác nhận tham dự
-                    </motion.button>
+                {/* Note: RSVP moved to the photo section above */}
 
-                    <motion.button
-                        className="rsvp-button secondary"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        📅 Thêm vào lịch
-                    </motion.button>
-                </motion.div>
             </motion.section>
 
             {/* === Thank You Section === */}
-            <motion.section
-                className="thank-section"
-                style={{ opacity: opacityThank, y: yThank }}
-            >
-                <motion.div
-                    className="thank-content"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                >
+            <motion.section className="thank-section" style={{ opacity: opacityThank, y: yThank }}>
+                <motion.div className="thank-content" initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
                     <div className="thank-decoration">✨</div>
                     <h3>Cảm Ơn Bạn!</h3>
                     <p>Sự hiện diện của bạn sẽ làm cho ngày này thêm ý nghĩa</p>
                     <div className="thank-decoration">💖</div>
-
-                    <div className="contact-info">
-                        <p>Mọi thắc mắc vui lòng liên hệ:</p>
-                        <div className="links">
-                            <a href="tel:+84123456789" className="contact-link">
-                                📱 0768 464 821
-                            </a>
-                            <a href="mailto:graduate@example.com" className="contact-link">
-                                ✉️ qhuy14775@gmail.com
-                            </a>
-                            <a
-                                href={eventDetails.facebookUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="contact-link facebook-link"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="18"
-                                    height="18"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M22.676 0H1.326C.593 0 0 .593 0 1.326v21.348C0 23.406.593 24 1.326 24H12.82v-9.293H9.692v-3.62h3.128V8.413c0-3.1 1.894-4.788 4.66-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.796.716-1.796 1.765v2.314h3.588l-.467 3.62h-3.12V24h6.116C23.406 24 24 23.406 24 22.674V1.326C24 .593 23.406 0 22.676 0z" />
-                                </svg>
-                                Facebook
-                            </a>
-                        </div>
-                    </div>
                 </motion.div>
             </motion.section>
         </div>

@@ -137,7 +137,7 @@ body {
 }
 
 @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
+    0%, 100% { background-position: 0 50%; }
     50% { background-position: 100% 50%; }
 }
 
@@ -187,7 +187,7 @@ body {
 }
 
 @keyframes gradientRotate {
-    0%, 100% { background-position: 0% 50%; }
+    0%, 100% { background-position: 0 50%; }
     50% { background-position: 100% 50%; }
 }
 
@@ -399,316 +399,163 @@ body {
 /* ========== Action Section ========== */
 .action-section {
     display: flex;
-    gap: 1.5rem;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* RSVP input */
+.rsvp-input {
+    width: 100%;
+    max-width: 420px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    outline: none;
+    font-size: 1rem;
+    transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+}
+.rsvp-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+.rsvp-input:focus {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 0 6px rgba(255, 215, 0, 0.06);
+    border-color: rgba(255, 215, 0, 0.6);
+    transform: translateY(-1px);
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
     flex-wrap: wrap;
-    margin: 4rem 0;
+    justify-content: center;
 }
 
 .rsvp-button {
-    padding: 16px 40px;
+    padding: 10px 18px;
+    border-radius: 999px;
     border: none;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1.1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'Poppins', sans-serif;
-}
-
-.rsvp-button.primary {
-    background: linear-gradient(135deg, #ffd700, #ffb6ff);
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: linear-gradient(90deg, #ffd700, #ffb6ff);
     color: #0b0b10;
-    box-shadow:
-            0 4px 15px rgba(255, 215, 0, 0.4),
-            0 8px 30px rgba(255, 182, 255, 0.3);
-}
-
-.rsvp-button.primary:hover {
-    box-shadow:
-            0 6px 25px rgba(255, 215, 0, 0.6),
-            0 12px 40px rgba(255, 182, 255, 0.5);
-    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
 }
 
 .rsvp-button.secondary {
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
     color: #fff;
-    border: 2px solid rgba(255, 215, 0, 0.5);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none;
 }
 
-.rsvp-button.secondary:hover {
-    background: rgba(255, 215, 0, 0.2);
-    border-color: #ffd700;
+.rsvp-button.reject {
+    background: linear-gradient(90deg, #ff6b6b, #ff8fa3);
+    color: #fff;
 }
 
-.button-icon {
-    font-size: 1.2rem;
+.rsvp-button:active {
+    transform: scale(0.98);
 }
 
-/* ========== Info Cards ========== */
-.info-cards {
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 4rem;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+.rsvp-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
-.info-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem 2rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+.success-message {
+    margin-top: 12px;
+    color: #168926;
+    /*background: linear-gradient(90deg, rgba(196, 255, 196, 0.12), rgba(160, 255, 170, 0.08));*/
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 600;
 }
 
-.info-card:hover {
-    background: rgba(255, 215, 0, 0.1);
-    border-color: rgba(255, 215, 0, 0.5);
-    transform: translateY(-5px);
-}
-
-.info-icon {
-    font-size: 2rem;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
-}
-
-.info-card p {
-    font-size: 1rem;
-    opacity: 0.9;
-    margin: 0;
-}
-
-/* ========== Timeline Section ========== */
-.timeline-section {
-    min-height: 100vh;
-    padding: 120px 20px;
-    background: linear-gradient(180deg, #1e1e2f, #0b0b10);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-}
-
-.timeline {
-    max-width: 700px;
-    margin: 4rem auto 0;
-    position: relative;
-    padding: 2rem 0;
-}
-
-.timeline::before {
-    content: '';
-    position: absolute;
-    left: 30px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, transparent, #ffd700, transparent);
-}
-
-.timeline-item {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 3rem;
-    position: relative;
-}
-
-.timeline-marker {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ffd700, #ffb6ff);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0b0b10;
-    flex-shrink: 0;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-    position: relative;
-    z-index: 1;
-}
-
-.timeline-content {
-    flex: 1;
-    background: rgba(30, 30, 47, 0.6);
-    padding: 1.5rem 2rem;
-    border-radius: 15px;
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
-
-.timeline-content:hover {
-    border-color: rgba(255, 215, 0, 0.5);
-    transform: translateX(10px);
-    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
-}
-
-.timeline-content h4 {
-    color: #ffd700;
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
-    font-family: 'Playfair Display', serif;
-}
-
-.timeline-content p {
-    opacity: 0.9;
-    line-height: 1.6;
-}
-
-/* ========== Thank You Section ========== */
-.thank-section {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(180deg, #0b0b10, #1a1a2e);
-    padding: 80px 20px;
-    position: relative;
-    overflow: visible;
-}
-
-.thank-section::before {
-    content: '';
-    position: absolute;
+/* ========== Dialog (native) styles ========== */
+.rsvp-dialog {
+    /* ensure dialog is centered in the viewport */
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent);
-    border-radius: 50%;
-    animation: pulse 3s ease-in-out infinite;
+
+    border: none;
+    border-radius: 12px;
+    padding: 18px 20px;
+    background: linear-gradient(180deg, #0f1720, #121826);
+    color: #fff;
+    box-shadow: 0 20px 60px rgba(2, 6, 23, 0.75);
+    max-width: 420px;
+    width: calc(100% - 40px);
+    z-index: 9999;
+    margin: 0;
 }
 
-@keyframes pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+/* backdrop */
+.rsvp-dialog::backdrop {
+    background: rgba(2, 6, 23, 0.6);
+    backdrop-filter: blur(3px) saturate(120%);
 }
 
-.thank-content {
-    text-align: center;
-    max-width: 700px;
-    position: relative;
-    z-index: 1;
-}
-
-.thank-decoration {
-    font-size: 4rem;
-    margin: 1rem 0;
-    animation: float 3s ease-in-out infinite;
-}
-
-.thank-content h3 {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-family: 'Playfair Display', serif;
-    background: linear-gradient(135deg, #ffd700, #ffb6ff, #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 2rem 0 1.5rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-.thank-content > p {
-    font-size: 1.3rem;
-    opacity: 0.9;
-    font-family: 'Cormorant Garamond', serif;
-    line-height: 1.8;
-    margin-bottom: 3rem;
-}
-
-.contact-info {
-    margin-top: 3rem;
-    padding: 2rem;
-    background: rgba(30, 30, 47, 0.4);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    backdrop-filter: blur(10px);
-}
-
-.contact-info p {
-    font-size: 1.1rem;
-    opacity: 0.8;
-    margin-bottom: 1rem;
-}
-
-/* Make contact links stack vertically and center them by default so they don't sit in a single horizontal row */
-.contact-info .links {
+.dialog-form {
     display: flex;
-    flex-direction: row; /* horizontal layout */
-    align-items: center; /* vertical center of items */
-    justify-content: center; /* center the group */
-    gap: 1rem; /* spacing between each contact item */
-    flex-wrap: wrap; /* allow wrapping on smaller widths */
-}
-
-.contact-link {
-    display: flex;        /* make each link a row so icon+text align */
+    flex-direction: column;
+    gap: 12px;
     align-items: center;
-    gap: 8px;             /* space between icon and text */
-    margin: 0;            /* spacing handled by container gap */
-    padding: 10px 16px;
-    color: #ffd700;
-    text-decoration: none;
-    border-radius: 10px;
-    background: rgba(255, 215, 0, 0.06);
-    border: 1px solid rgba(255, 215, 0, 0.18);
-    transition: all 0.2s ease;
-    font-size: 1rem;
+    justify-content: center;
+    text-align: center;
 }
 
-.contact-link:hover {
-    background: rgba(255, 215, 0, 0.12);
-    border-color: rgba(255, 215, 0, 0.4);
+.dialog-form p {
+    font-size: 1rem;
+    color: #e6e6e6;
+    line-height: 1.5;
+}
+
+.dialog-close {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.dialog-close:hover {
+    opacity: 0.95;
     transform: translateY(-2px);
 }
 
-/* Keep facebook specific sizing for the svg */
-.contact-link.facebook-link svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .photo-container {
+        max-width: 92%;
+    }
+
+    .hero-text {
+        padding: 24px 12px;
+    }
+
+    .rsvp-input {
+        max-width: 100%;
+    }
+
+    .button-row {
+        gap: 8px;
+    }
 }
 
-@media (max-width: 768px) {
-    .hero-text { padding: 20px; }
-    .photo-frame { width: 220px; height: 220px; }
-    .details-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .action-section { flex-direction: column; align-items: center; }
-    .rsvp-button { width: 100%; max-width: 300px; justify-content: center; }
-    .info-cards { flex-direction: column; gap: 1rem; }
-    .timeline::before { left: 20px; }
-    .timeline-marker { width: 40px; height: 40px; font-size: 1.2rem; }
-    .timeline-item { gap: 1rem; }
-    .contact-info .links { flex-direction: column; align-items: center; }
-    .contact-link { width: auto; }
-}
-
-@media (max-width: 480px) {
-    .section-title { font-size: 2rem; }
-    .photo-frame { width: 180px; height: 180px; }
-    .detail-card { padding: 2rem 1.5rem; }
-}
+/* End of appended styles */
 
 .graduate-quote {
     font-style: italic;
