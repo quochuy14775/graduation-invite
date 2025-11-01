@@ -1,9 +1,21 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./App.css";
 
 export default function GraduationLanding() {
     const containerRef = useRef(null);
+
+    const [isMobile, setIsMobile] = useState(false);
+
+    // 🧠 Xác định thiết bị di động
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const [eventDetails] = useState({
         name: "Đặng Quốc Huy",
@@ -20,16 +32,19 @@ export default function GraduationLanding() {
         offset: ["start start", "end end"],
     });
 
+    // 🎯 Điều chỉnh tốc độ animation theo loại thiết bị
+    const speedFactor = isMobile ? 0.6 : 0.7; // càng nhỏ => cuộn càng nhanh
+
     // Scroll animations
-    const yHero = useTransform(scrollYProgress, [0, 0.4], ["0%", "-25%"]);
-    const opacityHero = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-    const opacityInvite = useTransform(scrollYProgress, [0.2, 0.45], [0, 1]);
-    const scaleInvite = useTransform(scrollYProgress, [0.2, 0.45], [0.9, 1]);
-    const yInvite = useTransform(scrollYProgress, [0.2, 0.45], ["25%", "0%"]);
-    const opacityDetails = useTransform(scrollYProgress, [0.45, 0.65], [0, 1]);
-    const xDetails = useTransform(scrollYProgress, [0.45, 0.65], ["-10%", "0%"]);
-    const opacityThank = useTransform(scrollYProgress, [0.7, 0.95], [0, 1]);
-    const yThank = useTransform(scrollYProgress, [0.7, 0.95], ["30%", "0%"]);
+    const yHero = useTransform(scrollYProgress, [0, 0.4 * speedFactor], ["0%", "-25%"]);
+    const opacityHero = useTransform(scrollYProgress, [0, 0.25 * speedFactor], [1, 0]);
+    const opacityInvite = useTransform(scrollYProgress, [0.2 * speedFactor, 0.45 * speedFactor], [0, 1]);
+    const scaleInvite = useTransform(scrollYProgress, [0.2 * speedFactor, 0.45 * speedFactor], [0.9, 1]);
+    const yInvite = useTransform(scrollYProgress, [0.2 * speedFactor, 0.45 * speedFactor], ["25%", "0%"]);
+    const opacityDetails = useTransform(scrollYProgress, [0.45 * speedFactor, 0.65 * speedFactor], [0, 1]);
+    const xDetails = useTransform(scrollYProgress, [0.45 * speedFactor, 0.65 * speedFactor], ["-10%", "0%"]);
+    const opacityThank = useTransform(scrollYProgress, [0.7 * speedFactor, 0.95 * speedFactor], [0, 1]);
+    const yThank = useTransform(scrollYProgress, [0.7 * speedFactor, 0.95 * speedFactor], ["30%", "0%"]);
 
     return (
         <div className="page main-container" ref={containerRef}>
@@ -125,7 +140,6 @@ export default function GraduationLanding() {
                         <div className="title-line"></div>
                     </motion.div>
 
-                    {/* 💬 Quote & Caption */}
                     <motion.blockquote
                         className="graduate-quote"
                         initial={{ opacity: 0, y: 30 }}
@@ -146,7 +160,6 @@ export default function GraduationLanding() {
                         💡 Kỷ niệm 4 năm đại học – cảm ơn thầy cô và bạn bè đã cùng đồng hành!
                     </motion.p>
 
-                    {/* 🎈 Floating Icons */}
                     <motion.div
                         className="floating-icons"
                         initial={{ opacity: 0 }}
